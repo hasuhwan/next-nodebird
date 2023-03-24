@@ -4,7 +4,7 @@ export const initialState = {
       id: 1,
       User: { id: 1, nickname: "하수환" },
       content: "첫 번째 게시글 #해시태그 #익스프레스",
-      Image: [
+      Images: [
         {
           src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Fb28812ce-8b03-416c-b074-7ec49e583908.jpeg&w=1080&q=75",
         },
@@ -42,7 +42,11 @@ const dummyPost = {
     id: 1,
     nickname: "하수환",
   },
-  Image: [],
+  Images: [
+    {
+      src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Fa89ab69e-89d1-4c40-8866-9f7b7ed883da.jpeg&w=1080&q=75",
+    },
+  ],
   Comments: [],
 };
 
