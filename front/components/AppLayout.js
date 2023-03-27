@@ -9,6 +9,20 @@ import { useSelector } from "react-redux";
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
 `;
+import { createGlobalStyle } from "styled-components";
+
+const Global = createGlobalStyle`
+.ant-row{
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+.ant-col:first-child{
+  padding-left: 0 !important;
+}
+.ant-col:last-child{
+  padding-right: 0 !important;
+}
+`;
 const menuItems = [
   { label: <Link href="/">노드버드</Link>, key: "home" },
   { label: <Link href="/profile">profile</Link>, key: "profile" },
@@ -23,6 +37,7 @@ const AppLayout = ({ children }) => {
   });
   return (
     <div>
+      <Global />
       <Menu
         onClick={onMenu}
         selectedKeys={[current]}
