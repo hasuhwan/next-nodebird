@@ -1,66 +1,159 @@
+import shortId from "shortid";
+import { produce } from "immer";
+import { faker } from "@faker-js/faker";
+faker.seed(123);
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: { id: 1, nickname: "하수환" },
-      content: "첫 번째 게시글 #해시태그 #익스프레스",
-      Images: [
-        {
-          src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Fb28812ce-8b03-416c-b074-7ec49e583908.jpeg&w=1080&q=75",
-        },
-        {
-          src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Faa4145a9-1f0d-4a20-937d-cddf4627e9e7.jpeg&w=1080&q=75",
-        },
-        {
-          src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Fa89ab69e-89d1-4c40-8866-9f7b7ed883da.jpeg&w=1080&q=75",
-        },
-      ],
+  mainPosts: [],
+  imagePaths: [],
+  hasMorePosts: true,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
+};
+export const generateDummyPost = (number) =>
+  Array(number)
+    .fill()
+    .map((el, idx) => ({
+      id: shortId.generate(),
+      User: { id: shortId.generate(), nickname: faker.name.firstName() },
+      content: faker.lorem.paragraph(),
+      Images: [{ src: faker.image.image() }],
       Comments: [
         {
-          User: { nickname: "기메지" },
-          content: "우와",
-        },
-        {
-          User: { nickname: "박지수" },
-          content: "우와2",
+          User: { id: shortId.generate(), nickname: faker.name.firstName() },
+          content: faker.lorem.sentence(),
         },
       ],
-    },
-  ],
-  imagePaths: [],
-  postAdded: false,
-};
+    }));
 
-const ADD_POST = "ADD_POST";
-export const addPost = {
-  type: ADD_POST,
-};
-const dummyPost = {
-  id: 2,
-  content: "더미데이터입니다.",
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
+
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+
+export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
+export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
+export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const loadPosts = () => ({
+  type: LOAD_POSTS_REQUEST,
+});
+
+export const addPost = (data) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
+export const removePost = (data) => ({
+  type: REMOVE_POST_REQUEST,
+  data,
+});
+export const addComment = (data) => ({
+  type: ADD_COMMENT_REQUEST,
+  data,
+});
+const dummyPost = (data) => ({
+  id: data.id,
+  content: data.content,
   User: {
     id: 1,
     nickname: "하수환",
   },
-  Images: [
-    {
-      src: "https://66challenge.shop/_next/image?url=http%3A%2F%2Fchallenge66.file.bucket.s3.ap-northeast-2.amazonaws.com%2Fimages%2Fa89ab69e-89d1-4c40-8866-9f7b7ed883da.jpeg&w=1080&q=75",
-    },
-  ],
+  Images: [],
   Comments: [],
+});
+const dummyComment = (data) => {
+  console.log(data);
+  return {
+    id: shortId.generate(),
+    content: data,
+    User: {
+      id: 1,
+      nickname: "하수환",
+    },
+  };
 };
-
+//이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성 지키면서)
 const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_POST:
-      return {
-        ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
-        postAdded: true,
-      };
-    default:
-      return state;
-  }
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+      case LOAD_POSTS_SUCCESS:
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
+        break;
+      case ADD_POST_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+      case ADD_POST_SUCCESS:
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.mainPosts.unshift(dummyPost(action.data));
+        break;
+      case ADD_POST_FAILURE:
+        draft.addPostLoading = false;
+        draft.addPostError = action.error;
+        break;
+      case REMOVE_POST_REQUEST:
+        draft.removePostLoading = true;
+        draft.removePostDone = false;
+        draft.removePostError = null;
+        break;
+      case REMOVE_POST_SUCCESS:
+        draft.removePostLoading = false;
+        draft.removePostDone = true;
+        draft.mainPosts = draft.mainPosts.filter((el) => el.id !== action.data);
+        break;
+      case REMOVE_POST_FAILURE:
+        draft.removePostLoading = false;
+        draft.removePostError = action.error;
+        break;
+      case ADD_COMMENT_REQUEST:
+        draft.addCommentLoading = true;
+        draft.addCommentDone = false;
+        draft.addCommentError = null;
+        break;
+      case ADD_COMMENT_SUCCESS:
+        const post = draft.mainPosts.find((el) => el.id === action.data.postId);
+        post.Comments.unshift(dummyComment(action.data.content));
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        break;
+      case ADD_COMMENT_FAILURE:
+        draft.addCommentLoading = false;
+        draft.addCommentError = action.error;
+        break;
+      default:
+        break;
+    }
+  });
 };
 
 export default reducer;
