@@ -12,8 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
-import { removePost } from "../reducers/post";
 import FollowButton from "./FollowButton";
+import { postActions } from "../reducers/post";
 const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -27,7 +27,7 @@ const PostCard = ({ post }) => {
     setCommentFormOpened((prev) => !prev);
   }, [commentFormOpened]);
   const onRemovePost = useCallback(() => {
-    dispatch(removePost(post.id));
+    dispatch(postActions.removePostRequest(post.id));
   }, []);
   return (
     <div style={{ marginBottom: 20 }}>

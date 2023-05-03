@@ -5,7 +5,7 @@ import { Form, Input, Checkbox, Button } from "antd";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { signupRequestAction } from "../reducers/user";
+import { userActions } from "../reducers/user";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -39,8 +39,7 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    console.log(email, nickname, password);
-    dispatch(signupRequestAction({ email, password, nickname }));
+    dispatch(userActions.singUpRequest({ email, password, nickname }));
   }, [email, password, passwordCheck, term]);
   return (
     <AppLayout>

@@ -3,7 +3,7 @@ import AppLayout from "../components/AppLayout";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
-import { loadPosts } from "../reducers/post";
+import { postActions } from "../reducers/post";
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
@@ -11,7 +11,7 @@ const Home = () => {
     (state) => state.post
   );
   useEffect(() => {
-    dispatch(loadPosts());
+    dispatch(postActions.loadPostsRequest());
   }, []);
   useEffect(() => {
     function onScroll() {
@@ -20,7 +20,7 @@ const Home = () => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePosts && !loadPostsLoading) {
-          dispatch(loadPosts());
+          dispatch(postActions.loadPostsRequest());
         }
       }
     }
