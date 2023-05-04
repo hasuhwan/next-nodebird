@@ -1,11 +1,12 @@
 import AppLayout from "../components/AppLayout";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import { Form, Input, Checkbox, Button } from "antd";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../reducers/user";
+import { useRouter } from "next/router";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -18,7 +19,20 @@ const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const dispatch = useDispatch();
-  const signUpLoading = useSelector((state) => state.user);
+  const router = useRouter();
+  const { signUpLoading, signUpDone, signUpError } = useSelector(
+    (state) => state.user
+  );
+  useEffect(() => {
+    if (signUpDone) {
+      router.push("/");
+    }
+  }, [signUpDone]);
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
   const onChangePasswordCheck = useCallback(
     (e) => {
       setPasswordCheck(e.target.value);
@@ -48,7 +62,7 @@ const Signup = () => {
       </Head>
       <Form onFinish={onSubmit}>
         <div>
-          <label htmlFor="user-email">아이디</label>
+          <label htmlFor="user-email">이메일</label>
           <br />
           <Input
             type="email"

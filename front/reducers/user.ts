@@ -48,6 +48,7 @@ const userSlice = createSlice({
       state.me.Followings.push({ id: action.payload });
     },
     followFailure(state, action: PayloadAction) {
+      console.log(action);
       state.followLoading = false;
       state.followError = action.error;
     },
@@ -106,7 +107,7 @@ const userSlice = createSlice({
     },
     singUpFailure(state, action: PayloadAction) {
       state.signUpLoading = false;
-      state.signUpError = action.error;
+      state.signUpError = action.payload;
     },
     changeNicknameRequest(state, action: PayloadAction) {
       state.changeNicknameLoading = true;

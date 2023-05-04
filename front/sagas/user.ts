@@ -33,7 +33,6 @@ function logInAPI(data) {
 
 function* logIn(action) {
   try {
-    yield delay(1000);
     // const result = yield call(logInAPI, action.data);
     yield put(userActions.logInSuccess(action.payload));
   } catch (err) {
@@ -53,14 +52,13 @@ function* logOut() {
     yield put(userActions.logOutFailure(err.response.data));
   }
 }
-function signUpAPI() {
-  return axios.post("/api/signup");
+function signUpAPI(data) {
+  return axios.post("http://localhost:3065/user", data);
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    yield delay(1000);
-    // const result = yield call(signUpAPI);
+    const result = yield call(signUpAPI, action.payload);
     yield put(userActions.singUpSuccess());
   } catch (err) {
     yield put(userActions.singUpFailure(err.response.data));
