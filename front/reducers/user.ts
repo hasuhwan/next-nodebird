@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 export const initialState = {
+  loadMyInfoLoading: false, //내 정보 가져오기
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   followLoading: false, //팔로우 시도 중
   followDone: false,
   followError: null,
@@ -50,7 +53,7 @@ const userSlice = createSlice({
     followFailure(state, action: PayloadAction) {
       console.log(action);
       state.followLoading = false;
-      state.followError = action.error;
+      state.followError = action.payload;
     },
     unfollowRequest(state, action: PayloadAction) {
       state.unfollowLoading = true;
@@ -66,9 +69,25 @@ const userSlice = createSlice({
     },
     unfollowFailure(state, action: PayloadAction) {
       state.unfollowLoading = false;
-      state.unfollowError = action.error;
+      state.unfollowError = action.payload;
+    },
+    loadMyInfoRequest(state, action: PayloadAction) {
+      state.loadMyInfoLoading = true;
+      state.loadMyInfoDone = false;
+      state.loadMyInfoError = null;
+    },
+    loadMyInfoSuccess(state, action: PayloadAction) {
+      state.loadMyInfoLoading = false;
+      state.loadMyInfoDone = true;
+      state.me = action.payload;
+    },
+    loadMyInfoFailure(state, action: PayloadAction) {
+      console.log(action);
+      state.loadMyInfoLoading = false;
+      state.loadMyInfoError = action.payload;
     },
     logInRequest(state, action: PayloadAction) {
+      console.log(action);
       state.logInLoading = true;
       state.logInDone = false;
       state.logInError = null;
@@ -76,11 +95,11 @@ const userSlice = createSlice({
     logInSuccess(state, action: PayloadAction) {
       state.logInLoading = false;
       state.logInDone = true;
-      state.me = dummyUser(action.payload);
+      state.me = action.payload;
     },
     logInFailure(state, action: PayloadAction) {
       state.logInLoading = false;
-      state.logInError = action.error;
+      state.logInError = action.payload;
     },
     logOutRequest(state, action: PayloadAction) {
       state.logOutLoading = true;
@@ -93,8 +112,9 @@ const userSlice = createSlice({
       state.me = null;
     },
     logOutFailure(state, action: PayloadAction) {
+      console.log(action);
       state.logOutLoading = false;
-      state.logOutError = action.error;
+      state.logOutError = action.payload;
     },
     singUpRequest(state, action: PayloadAction) {
       state.signUpLoading = true;
@@ -120,7 +140,7 @@ const userSlice = createSlice({
     },
     changeNicknameFailure(state, action: PayloadAction) {
       state.changeNicknameLoading = false;
-      state.changeNicknameError = action.error;
+      state.changeNicknameError = action.payload;
     },
     addPostToMe(state, action: PayloadAction) {
       state.me.Posts.unshift({ id: action.payload });

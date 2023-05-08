@@ -4,13 +4,16 @@ import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import { postActions } from "../reducers/post";
+import { userActions } from "../reducers/user";
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post
   );
+
   useEffect(() => {
+    dispatch(userActions.loadMyInfoRequest());
     dispatch(postActions.loadPostsRequest());
   }, []);
   useEffect(() => {

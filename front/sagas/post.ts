@@ -1,33 +1,28 @@
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
-import shortId from "shortid";
-import post, { postActions } from "../reducers/post";
+import { postActions } from "../reducers/post";
 import { userActions } from "../reducers/user";
-import { generateDummyPost } from "../reducers/post";
 function addPostAPI(data) {
-  return axios.post("/api/post", data);
+  return axios.post("/post", { content: data });
 }
 
 function* addPost(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
-    const id = shortId.generate();
-    yield put(postActions.addPostSuccess({ id, content: action.payload }));
-    yield put(userActions.addPostToMe(id));
+    const result = yield call(addPostAPI, action.payload);
+    yield put(postActions.addPostSuccess(result.data));
+    yield put(userActions.addPostToMe(result.data.id));
   } catch (err) {
     yield put(postActions.addPostFailure(err.response.data));
   }
 }
-function loadPostsAPI(data) {
-  return axios.get("/api/post", data);
+function loadPostsAPI() {
+  return axios.get("/posts");
 }
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(loadPostsAPI, action.data);
-    yield delay(1000);
-    yield put(postActions.loadPostsSuccess(generateDummyPost(10)));
+    const result = yield call(loadPostsAPI);
+    yield put(postActions.loadPostsSuccess(result.data));
   } catch (err) {
     yield put(postActions.loadPostsFailure(err.response.data));
   }
@@ -49,14 +44,14 @@ function* removePost(action) {
 }
 
 function addCommentAPI(data) {
-  return axios.post(`/api/post/${data.postId}/comment`, data);
+  return axios.post(`/post/${data.postId}/comment`, data); //POST /post/1/comment
 }
 function* addComment(action) {
   try {
-    // const result = yield call(addCommentAPI, action.data);
-    yield delay(1000);
-    yield put(postActions.addCommentSuccess(action.payload));
+    const result = yield call(addCommentAPI, action.payload);
+    yield put(postActions.addCommentSuccess(result.data));
   } catch (err) {
+    console.error(err);
     yield put(postActions.addCommentFailure(err.response.data));
   }
 }
