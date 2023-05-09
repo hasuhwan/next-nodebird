@@ -16,6 +16,15 @@ export const initialState = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+  unlikePostLoading: false,
+  unlikePostDone: false,
+  unlikePostError: null,
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: null,
 };
 
 const postSlice = createSlice({
@@ -36,6 +45,41 @@ const postSlice = createSlice({
     loadPostsFailure(state, action: PayloadAction) {
       state.loadPostsLoading = false;
       state.loadPostsError = action.payload;
+    },
+    likePostRequest(state, action: PayloadAction) {
+      state.likePostLoading = true;
+      state.likePostDone = false;
+      state.likePostError = null;
+    },
+    likePostSuccess(state, action: PayloadAction) {
+      const post = state.mainPosts.find(
+        (el) => el.id === action.payload.PostId
+      );
+      console.log(action.payload);
+      post.Likers.push({ id: action.payload.UserId });
+      state.likePostLoading = false;
+      state.likePostDone = true;
+    },
+    likePostFailure(state, action: PayloadAction) {
+      state.likePostLoading = false;
+      state.likePostError = action.payload;
+    },
+    unlikePostRequest(state, action: PayloadAction) {
+      state.unlikePostLoading = true;
+      state.unlikePostDone = false;
+      state.unlikePostError = null;
+    },
+    unlikePostSuccess(state, action: PayloadAction) {
+      const post = state.mainPosts.find(
+        (el) => el.id === action.payload.PostId
+      );
+      post.Likers = post.Likers.filter((el) => el.id !== action.payload.UserId);
+      state.unlikePostLoading = false;
+      state.unlikePostDone = true;
+    },
+    unlikePostFailure(state, action: PayloadAction) {
+      state.unlikePostLoading = false;
+      state.unlikePostError = action.payload;
     },
     addPostRequest(state, action: PayloadAction) {
       state.addPostLoading = true;
@@ -60,7 +104,7 @@ const postSlice = createSlice({
       state.removePostLoading = false;
       state.removePostDone = true;
       state.mainPosts = state.mainPosts.filter(
-        (el) => el.id !== action.payload
+        (el) => el.id !== action.payload.PostId
       );
     },
     removePostFailure(state, action: PayloadAction) {
@@ -83,6 +127,20 @@ const postSlice = createSlice({
     addCommentFailure(state, action: PayloadAction) {
       state.addCommentLoading = false;
       state.addCommentError = action.payload;
+    },
+    uploadImagesRequest(state, action: PayloadAction) {
+      state.uploadImagesLoading = true;
+      state.uploadImagesDone = false;
+      state.uploadImagesError = null;
+    },
+    uploadImagesSuccess(state, action: PayloadAction) {
+      state.imagePaths = action.payload;
+      state.uploadImagesLoading = false;
+      state.uploadImagesDone = true;
+    },
+    uploadImagesFailure(state, action: PayloadAction) {
+      state.uploadImagesLoading = false;
+      state.uploadImagesError = action.payload;
     },
   },
 });

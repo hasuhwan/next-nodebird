@@ -3,11 +3,17 @@ import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
 import React, { useEffect } from "react";
 import Head from "next/head";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { userActions } from "../reducers/user";
 const Profile = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+  useEffect(() => {
+    dispatch(userActions.loadFollowersRequest());
+    dispatch(userActions.loadFollowingsRequest());
+  }, []);
   useEffect(() => {
     if (!(me && me.id)) {
       router.replace("/");

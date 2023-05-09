@@ -1,12 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 export const initialState = {
+  loadFollowersLoading: false, //내 팔로워 가져오기
+  loadFollowersDone: false,
+  loadFollowersError: null,
+  loadFollowingsLoading: false, //내 팔로잉 가져오기
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
   loadMyInfoLoading: false, //내 정보 가져오기
   loadMyInfoDone: false,
   loadMyInfoError: null,
   followLoading: false, //팔로우 시도 중
   followDone: false,
   followError: null,
+  removeFollowerLoading: false, //팔로워 차단
+  removeFollowerDone: false,
+  removeFollowerError: null,
   unfollowLoading: false, //언팔로우 시도 중
   unfollowDone: false,
   unfollowError: null,
@@ -27,19 +36,38 @@ export const initialState = {
   loginData: {},
 };
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: "hasuhwan",
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ nickname: "김예지" }, { nickname: "박지수" }],
-  Followers: [{ nickname: "김예지" }, { nickname: "박지수" }],
-});
-
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    loadFollowersRequest(state, action: PayloadAction) {
+      state.loadFollowersLoading = true;
+      state.loadFollowersDone = false;
+      state.loadFollowersError = null;
+    },
+    loadFollowersSuccess(state, action: PayloadAction) {
+      state.loadFollowersLoading = false;
+      state.loadFollowersDone = true;
+      state.me.Followers = action.payload;
+    },
+    loadFollowersFailure(state, action: PayloadAction) {
+      state.loadFollowersLoading = false;
+      state.loadFollowersError = action.payload;
+    },
+    loadFollowingsRequest(state, action: PayloadAction) {
+      state.loadFollowingsLoading = true;
+      state.loadFollowingsDone = false;
+      state.loadFollowingsError = null;
+    },
+    loadFollowingsSuccess(state, action: PayloadAction) {
+      state.loadFollowingsLoading = false;
+      state.loadFollowingsDone = true;
+      state.me.Followings = action.payload;
+    },
+    loadFollowingsFailure(state, action: PayloadAction) {
+      state.loadFollowingsLoading = false;
+      state.loadFollowingsError = action.payload;
+    },
     followRequest(state, action: PayloadAction) {
       state.followLoading = true;
       state.followDone = false;
@@ -48,7 +76,7 @@ const userSlice = createSlice({
     followSuccess(state, action: PayloadAction) {
       state.followLoading = false;
       state.followDone = true;
-      state.me.Followings.push({ id: action.payload });
+      state.me.Followings.push({ id: action.payload.UserId });
     },
     followFailure(state, action: PayloadAction) {
       console.log(action);
@@ -64,12 +92,28 @@ const userSlice = createSlice({
       state.unfollowLoading = false;
       state.unfollowDone = true;
       state.me.Followings = state.me.Followings.filter(
-        (el) => el.id !== action.payload
+        (el) => el.id !== action.payload.UserId
       );
     },
     unfollowFailure(state, action: PayloadAction) {
       state.unfollowLoading = false;
       state.unfollowError = action.payload;
+    },
+    removeFollowerRequest(state, action: PayloadAction) {
+      state.removeFollowerLoading = true;
+      state.removeFollowerDone = false;
+      state.removeFollowerError = null;
+    },
+    removeFollowerSuccess(state, action: PayloadAction) {
+      state.removeFollowerLoading = false;
+      state.removeFollowerDone = true;
+      state.me.Followers = state.me.Followers.filter(
+        (el) => el.id !== action.payload.UserId
+      );
+    },
+    removeFollowerFailure(state, action: PayloadAction) {
+      state.removeFollowerLoading = false;
+      state.removeFollowerError = action.payload;
     },
     loadMyInfoRequest(state, action: PayloadAction) {
       state.loadMyInfoLoading = true;
@@ -116,16 +160,16 @@ const userSlice = createSlice({
       state.logOutLoading = false;
       state.logOutError = action.payload;
     },
-    singUpRequest(state, action: PayloadAction) {
+    signUpRequest(state, action: PayloadAction) {
       state.signUpLoading = true;
       state.signUpDone = false;
       state.signUpError = null;
     },
-    singUpSuccess(state, action: PayloadAction) {
+    signUpSuccess(state, action: PayloadAction) {
       state.signUpLoading = false;
       state.signUpDone = true;
     },
-    singUpFailure(state, action: PayloadAction) {
+    signUpFailure(state, action: PayloadAction) {
       state.signUpLoading = false;
       state.signUpError = action.payload;
     },
@@ -137,6 +181,7 @@ const userSlice = createSlice({
     changeNicknameSuccess(state, action: PayloadAction) {
       state.changeNicknameLoading = false;
       state.changeNicknameDone = true;
+      state.me.nickname = action.payload.nickname;
     },
     changeNicknameFailure(state, action: PayloadAction) {
       state.changeNicknameLoading = false;
@@ -146,7 +191,9 @@ const userSlice = createSlice({
       state.me.Posts.unshift({ id: action.payload });
     },
     removePostOfMe(state, action: PayloadAction) {
-      state.me.Posts = state.me.Posts.filter((el) => el.id !== action.payload);
+      state.me.Posts = state.me.Posts.filter(
+        (el) => el.id !== action.payload.PostId
+      );
     },
   },
 });

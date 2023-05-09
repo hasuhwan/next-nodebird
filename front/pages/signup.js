@@ -59,7 +59,7 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    dispatch(userActions.singUpRequest({ email, password, nickname }));
+    dispatch(userActions.signUpRequest({ email, password, nickname }));
   }, [email, password, passwordCheck, term]);
   return (
     <AppLayout>
