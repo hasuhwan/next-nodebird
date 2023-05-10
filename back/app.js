@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const passportConfig = require("./passport");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const path = require("path");
 dotenv.config();
 const app = express();
 db.sequelize
@@ -24,6 +25,7 @@ app.use(
     credentials: true,
   })
 );
+app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json()); //json 형식 데이터 넘겨주기
 app.use(express.urlencoded({ extended: true })); //form 형식 데이터 넘겨주기
 app.use(cookieParser(process.env.COOKIE_SECRET));

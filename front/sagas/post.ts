@@ -4,7 +4,7 @@ import { postActions } from "../reducers/post";
 import { userActions } from "../reducers/user";
 
 function addPostAPI(data) {
-  return axios.post("/post", { content: data });
+  return axios.post("/post", data);
 }
 
 function* addPost(action) {
@@ -16,13 +16,13 @@ function* addPost(action) {
     yield put(postActions.addPostFailure(err.response.data));
   }
 }
-function loadPostsAPI() {
-  return axios.get("/posts");
+function loadPostsAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI);
+    const result = yield call(loadPostsAPI, action.payload?.lastId);
     yield put(postActions.loadPostsSuccess(result.data));
   } catch (err) {
     yield put(postActions.loadPostsFailure(err.response.data));
@@ -94,8 +94,23 @@ function* uploadImages(action) {
     yield put(postActions.uploadImagesFailure(err.response.data));
   }
 }
-//takeLatest는 응답을 취소한다. 요청을 취소하는 것이 아니다. 따라서 서버에서 같은 내용의 데이터가 연달아 들어왔는지 확인해야 한다.
+function retweetAPI(data) {
+  return axios.post(`/post/${data}/retweet`);
+}
 
+function* retweet(action) {
+  try {
+    const result = yield call(retweetAPI, action.payload);
+    yield put(postActions.retweetSuccess(result.data));
+  } catch (err) {
+    console.error(err);
+    yield put(postActions.retweetFailure(err.response.data));
+  }
+}
+//takeLatest는 응답을 취소한다. 요청을 취소하는 것이 아니다. 따라서 서버에서 같은 내용의 데이터가 연달아 들어왔는지 확인해야 한다.
+function* watchRetweet() {
+  yield takeLatest(postActions.retweetRequest, retweet);
+}
 function* watchAddPost() {
   yield takeLatest(postActions.addPostRequest, addPost);
 }
@@ -119,6 +134,7 @@ function* watchUploadImages() {
 }
 export default function* postSaga() {
   yield all([
+    fork(watchRetweet),
     fork(watchUploadImages),
     fork(watchLikePost),
     fork(watchUnlikePost),

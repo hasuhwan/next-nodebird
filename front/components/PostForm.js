@@ -13,21 +13,33 @@ const PostForm = () => {
       setText("");
     }
   }, [addPostDone]);
+
   const onSubmit = useCallback(() => {
-    dispatch(postActions.addPostRequest(text));
-  }, [text]);
+    if (!text || !text.trim()) {
+      return alert("게시글을 작성하세요.");
+    }
+    const formData = new FormData();
+    imagePaths.forEach((el) => {
+      formData.append("image", el);
+    });
+    formData.append("content", text);
+    dispatch(postActions.addPostRequest(formData));
+  }, [text, imagePaths]);
+
   const imageInput = useRef();
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
   const onChangeImages = useCallback((e) => {
-    console.log(e.target.files);
     const imageFormData = new FormData();
     Array.from(e.target.files).forEach((el) => {
       imageFormData.append("image", el);
     });
     dispatch(postActions.uploadImagesRequest(imageFormData));
   });
+  const onRemoveImage = useCallback((index) => {
+    dispatch(postActions.removeImage(index));
+  }, []);
   return (
     <Form
       style={{ margin: "10px 0 20px" }}
@@ -55,11 +67,15 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map((v) => (
+        {imagePaths.map((v, i) => (
           <div key={v} style={{ display: "inline-block" }}>
-            <img src={v} style={{ width: "200px" }} alt={v} />
+            <img
+              src={`http://localhost:3065/${v}`}
+              style={{ width: "200px" }}
+              alt={v}
+            />
             <div>
-              <Button>제거</Button>
+              <Button onClick={() => onRemoveImage(i)}>제거</Button>
             </div>
           </div>
         ))}
