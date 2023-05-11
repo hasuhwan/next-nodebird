@@ -1,4 +1,4 @@
-import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
+import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import { postActions } from "../reducers/post";
 import { userActions } from "../reducers/user";
@@ -26,6 +26,18 @@ function* loadPosts(action) {
     yield put(postActions.loadPostsSuccess(result.data));
   } catch (err) {
     yield put(postActions.loadPostsFailure(err.response.data));
+  }
+}
+function loadPostAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.payload);
+    yield put(postActions.loadPostSuccess(result.data));
+  } catch (err) {
+    yield put(postActions.loadPostFailure(err.response.data));
   }
 }
 
@@ -117,6 +129,9 @@ function* watchAddPost() {
 function* watchLoadPosts() {
   yield takeLatest(postActions.loadPostsRequest, loadPosts);
 }
+function* watchLoadPost() {
+  yield takeLatest(postActions.loadPostRequest, loadPost);
+}
 function* watchRemovePost() {
   yield takeLatest(postActions.removePostRequest, removePost);
 }
@@ -140,6 +155,7 @@ export default function* postSaga() {
     fork(watchUnlikePost),
     fork(watchAddPost),
     fork(watchLoadPosts),
+    fork(watchLoadPost),
     fork(watchRemovePost),
     fork(watchAddComment),
   ]);

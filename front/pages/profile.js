@@ -6,6 +6,9 @@ import Head from "next/head";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { userActions } from "../reducers/user";
+import wrapper from "../store/configureStore";
+import { END } from "redux-saga";
+import axios from "axios";
 const Profile = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -35,4 +38,17 @@ const Profile = () => {
     </>
   );
 };
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req?.headers.cookie;
+      axios.defaults.headers.Cookie = "";
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+      store.dispatch(userActions.loadMyInfoRequest());
+      store.dispatch(END);
+      await store.sagaTask.toPromise();
+    }
+);
 export default Profile;

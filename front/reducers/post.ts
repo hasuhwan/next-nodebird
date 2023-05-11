@@ -1,12 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 export const initialState = {
+  singlePost: null,
   mainPosts: [],
   imagePaths: [],
   hasMorePosts: true,
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -34,6 +38,20 @@ const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
+    loadPostRequest(state, action: PayloadAction) {
+      state.loadPostLoading = true;
+      state.loadPostDone = false;
+      state.loadPostError = null;
+    },
+    loadPostSuccess(state, action: PayloadAction) {
+      state.loadPostLoading = false;
+      state.loadPostDone = true;
+      state.singlePost = action.payload;
+    },
+    loadPostFailure(state, action: PayloadAction) {
+      state.loadPostLoading = false;
+      state.loadPostError = action.payload;
+    },
     loadPostsRequest(state, action: PayloadAction) {
       state.loadPostsLoading = true;
       state.loadPostsDone = false;
