@@ -43,12 +43,12 @@ const postSlice = createSlice({
       state.loadPostDone = false;
       state.loadPostError = null;
     },
-    loadPostSuccess(state, action: PayloadAction) {
+    loadPostSuccess(state, action: PayloadAction<any>) {
       state.loadPostLoading = false;
       state.loadPostDone = true;
       state.singlePost = action.payload;
     },
-    loadPostFailure(state, action: PayloadAction) {
+    loadPostFailure(state, action: PayloadAction<any>) {
       state.loadPostLoading = false;
       state.loadPostError = action.payload;
     },
@@ -57,13 +57,13 @@ const postSlice = createSlice({
       state.loadPostsDone = false;
       state.loadPostsError = null;
     },
-    loadPostsSuccess(state, action: PayloadAction) {
+    loadPostsSuccess(state, action: PayloadAction<any>) {
       state.loadPostsLoading = false;
       state.loadPostsDone = true;
       state.mainPosts = state.mainPosts.concat(action.payload);
       state.hasMorePosts = action.payload.length === 10;
     },
-    loadPostsFailure(state, action: PayloadAction) {
+    loadPostsFailure(state, action: PayloadAction<any>) {
       state.loadPostsLoading = false;
       state.loadPostsError = action.payload;
     },
@@ -72,16 +72,16 @@ const postSlice = createSlice({
       state.likePostDone = false;
       state.likePostError = null;
     },
-    likePostSuccess(state, action: PayloadAction) {
-      const post = state.mainPosts.find(
-        (el) => el.id === action.payload.PostId
+    likePostSuccess(state, action: PayloadAction<any>) {
+      const post: any = state.mainPosts.find(
+        (el: any) => el.id === action.payload.PostId
       );
       console.log(action.payload);
       post.Likers.push({ id: action.payload.UserId });
       state.likePostLoading = false;
       state.likePostDone = true;
     },
-    likePostFailure(state, action: PayloadAction) {
+    likePostFailure(state, action: PayloadAction<any>) {
       state.likePostLoading = false;
       state.likePostError = action.payload;
     },
@@ -90,15 +90,15 @@ const postSlice = createSlice({
       state.unlikePostDone = false;
       state.unlikePostError = null;
     },
-    unlikePostSuccess(state, action: PayloadAction) {
-      const post = state.mainPosts.find(
-        (el) => el.id === action.payload.PostId
+    unlikePostSuccess(state, action: PayloadAction<any>) {
+      const post: any = state.mainPosts.find(
+        (el: any) => el.id === action.payload.PostId
       );
       post.Likers = post.Likers.filter((el) => el.id !== action.payload.UserId);
       state.unlikePostLoading = false;
       state.unlikePostDone = true;
     },
-    unlikePostFailure(state, action: PayloadAction) {
+    unlikePostFailure(state, action: PayloadAction<any>) {
       state.unlikePostLoading = false;
       state.unlikePostError = action.payload;
     },
@@ -113,7 +113,7 @@ const postSlice = createSlice({
       state.mainPosts.unshift(action.payload);
       state.imagePaths = [];
     },
-    addPostFailure(state, action: PayloadAction) {
+    addPostFailure(state, action: PayloadAction<any>) {
       state.addPostLoading = false;
       state.addPostError = action.payload;
     },
@@ -122,31 +122,31 @@ const postSlice = createSlice({
       state.removePostDone = false;
       state.removePostError = null;
     },
-    removePostSuccess(state, action: PayloadAction) {
+    removePostSuccess(state, action: PayloadAction<any>) {
       state.removePostLoading = false;
       state.removePostDone = true;
       state.mainPosts = state.mainPosts.filter(
-        (el) => el.id !== action.payload.PostId
+        (el: any) => el.id !== action.payload.PostId
       );
     },
-    removePostFailure(state, action: PayloadAction) {
+    removePostFailure(state, action: PayloadAction<any>) {
       state.removePostLoading = false;
       state.removePostError = action.payload;
     },
-    addCommentRequest(state, action: PayloadAction) {
+    addCommentRequest(state, action: PayloadAction<any>) {
       state.addCommentLoading = true;
       state.addCommentDone = false;
       state.addCommentError = null;
     },
-    addCommentSuccess(state, action: PayloadAction) {
-      const post = state.mainPosts.find(
-        (el) => el.id === action.payload.PostId
+    addCommentSuccess(state, action: PayloadAction<any>) {
+      const post: any = state.mainPosts.find(
+        (el: any) => el.id === action.payload.PostId
       );
       post.Comments.unshift(action.payload);
       state.addCommentLoading = false;
       state.addCommentDone = true;
     },
-    addCommentFailure(state, action: PayloadAction) {
+    addCommentFailure(state, action: PayloadAction<any>) {
       state.addCommentLoading = false;
       state.addCommentError = action.payload;
     },
@@ -155,12 +155,12 @@ const postSlice = createSlice({
       state.uploadImagesDone = false;
       state.uploadImagesError = null;
     },
-    uploadImagesSuccess(state, action: PayloadAction) {
+    uploadImagesSuccess(state, action: PayloadAction<any>) {
       state.imagePaths = action.payload;
       state.uploadImagesLoading = false;
       state.uploadImagesDone = true;
     },
-    uploadImagesFailure(state, action: PayloadAction) {
+    uploadImagesFailure(state, action: PayloadAction<any>) {
       state.uploadImagesLoading = false;
       state.uploadImagesError = action.payload;
     },
@@ -174,11 +174,11 @@ const postSlice = createSlice({
       state.retweetDone = true;
       state.mainPosts.unshift(action.payload);
     },
-    retweetFailure(state, action: PayloadAction) {
+    retweetFailure(state, action: PayloadAction<any>) {
       state.retweetLoading = false;
       state.retweetError = action.payload;
     },
-    removeImage(state, action: PayloadAction) {
+    removeImage(state, action: PayloadAction<any>) {
       console.log(action.payload);
       state.imagePaths = state.imagePaths.filter(
         (el, i) => i !== action.payload

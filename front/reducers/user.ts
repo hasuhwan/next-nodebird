@@ -40,31 +40,31 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loadFollowersRequest(state, action: PayloadAction) {
+    loadFollowersRequest(state, action: PayloadAction<any>) {
       state.loadFollowersLoading = true;
       state.loadFollowersDone = false;
       state.loadFollowersError = null;
     },
-    loadFollowersSuccess(state, action: PayloadAction) {
+    loadFollowersSuccess(state, action: PayloadAction<any>) {
       state.loadFollowersLoading = false;
       state.loadFollowersDone = true;
       state.me.Followers = action.payload;
     },
-    loadFollowersFailure(state, action: PayloadAction) {
+    loadFollowersFailure(state, action: PayloadAction<any>) {
       state.loadFollowersLoading = false;
       state.loadFollowersError = action.payload;
     },
-    loadFollowingsRequest(state, action: PayloadAction) {
+    loadFollowingsRequest(state, action: PayloadAction<any>) {
       state.loadFollowingsLoading = true;
       state.loadFollowingsDone = false;
       state.loadFollowingsError = null;
     },
-    loadFollowingsSuccess(state, action: PayloadAction) {
+    loadFollowingsSuccess(state, action: PayloadAction<any>) {
       state.loadFollowingsLoading = false;
       state.loadFollowingsDone = true;
       state.me.Followings = action.payload;
     },
-    loadFollowingsFailure(state, action: PayloadAction) {
+    loadFollowingsFailure(state, action: PayloadAction<any>) {
       state.loadFollowingsLoading = false;
       state.loadFollowingsError = action.payload;
     },
@@ -73,29 +73,29 @@ const userSlice = createSlice({
       state.followDone = false;
       state.followError = null;
     },
-    followSuccess(state, action: PayloadAction) {
+    followSuccess(state, action: PayloadAction<any>) {
       state.followLoading = false;
       state.followDone = true;
       state.me.Followings.push({ id: action.payload.UserId });
     },
-    followFailure(state, action: PayloadAction) {
+    followFailure(state, action: PayloadAction<any>) {
       console.log(action);
       state.followLoading = false;
       state.followError = action.payload;
     },
-    unfollowRequest(state, action: PayloadAction) {
+    unfollowRequest(state, action: PayloadAction<any>) {
       state.unfollowLoading = true;
       state.unfollowDone = false;
       state.unfollowError = null;
     },
-    unfollowSuccess(state, action: PayloadAction) {
+    unfollowSuccess(state, action: PayloadAction<any>) {
       state.unfollowLoading = false;
       state.unfollowDone = true;
       state.me.Followings = state.me.Followings.filter(
         (el) => el.id !== action.payload.UserId
       );
     },
-    unfollowFailure(state, action: PayloadAction) {
+    unfollowFailure(state, action: PayloadAction<any>) {
       state.unfollowLoading = false;
       state.unfollowError = action.payload;
     },
@@ -104,14 +104,14 @@ const userSlice = createSlice({
       state.removeFollowerDone = false;
       state.removeFollowerError = null;
     },
-    removeFollowerSuccess(state, action: PayloadAction) {
+    removeFollowerSuccess(state, action: PayloadAction<any>) {
       state.removeFollowerLoading = false;
       state.removeFollowerDone = true;
       state.me.Followers = state.me.Followers.filter(
         (el) => el.id !== action.payload.UserId
       );
     },
-    removeFollowerFailure(state, action: PayloadAction) {
+    removeFollowerFailure(state, action: PayloadAction<any>) {
       state.removeFollowerLoading = false;
       state.removeFollowerError = action.payload;
     },
@@ -120,28 +120,27 @@ const userSlice = createSlice({
       state.loadMyInfoDone = false;
       state.loadMyInfoError = null;
     },
-    loadMyInfoSuccess(state, action: PayloadAction) {
+    loadMyInfoSuccess(state, action: PayloadAction<any>) {
       state.loadMyInfoLoading = false;
       state.loadMyInfoDone = true;
       state.me = action.payload;
     },
-    loadMyInfoFailure(state, action: PayloadAction) {
+    loadMyInfoFailure(state, action: PayloadAction<any>) {
       console.log(action);
       state.loadMyInfoLoading = false;
       state.loadMyInfoError = action.payload;
     },
     logInRequest(state, action: PayloadAction) {
-      console.log(action);
       state.logInLoading = true;
       state.logInDone = false;
       state.logInError = null;
     },
-    logInSuccess(state, action: PayloadAction) {
+    logInSuccess(state, action: PayloadAction<any>) {
       state.logInLoading = false;
       state.logInDone = true;
       state.me = action.payload;
     },
-    logInFailure(state, action: PayloadAction) {
+    logInFailure(state, action: PayloadAction<any>) {
       state.logInLoading = false;
       state.logInError = action.payload;
     },
@@ -155,7 +154,7 @@ const userSlice = createSlice({
       state.logOutDone = true;
       state.me = null;
     },
-    logOutFailure(state, action: PayloadAction) {
+    logOutFailure(state, action: PayloadAction<any>) {
       console.log(action);
       state.logOutLoading = false;
       state.logOutError = action.payload;
@@ -169,7 +168,7 @@ const userSlice = createSlice({
       state.signUpLoading = false;
       state.signUpDone = true;
     },
-    signUpFailure(state, action: PayloadAction) {
+    signUpFailure(state, action: PayloadAction<any>) {
       state.signUpLoading = false;
       state.signUpError = action.payload;
     },
@@ -178,19 +177,19 @@ const userSlice = createSlice({
       state.changeNicknameDone = false;
       state.changeNicknameError = null;
     },
-    changeNicknameSuccess(state, action: PayloadAction) {
+    changeNicknameSuccess(state, action: PayloadAction<any>) {
       state.changeNicknameLoading = false;
       state.changeNicknameDone = true;
       state.me.nickname = action.payload.nickname;
     },
-    changeNicknameFailure(state, action: PayloadAction) {
+    changeNicknameFailure(state, action: PayloadAction<any>) {
       state.changeNicknameLoading = false;
       state.changeNicknameError = action.payload;
     },
-    addPostToMe(state, action: PayloadAction) {
+    addPostToMe(state, action: PayloadAction<any>) {
       state.me.Posts.unshift({ id: action.payload });
     },
-    removePostOfMe(state, action: PayloadAction) {
+    removePostOfMe(state, action: PayloadAction<any>) {
       state.me.Posts = state.me.Posts.filter(
         (el) => el.id !== action.payload.PostId
       );

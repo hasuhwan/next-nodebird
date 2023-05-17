@@ -14,6 +14,10 @@ import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import FollowButton from "./FollowButton";
 import { postActions } from "../reducers/post";
+import moment from "moment";
+import dayjs from "dayjs";
+moment.locale("ko");
+dayjs.locale("ko");
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const dispatch = useDispatch();
@@ -99,7 +103,12 @@ const PostCard = ({ post }) => {
               post.Retweet.Images[0] && <PostImages images={post.Images} />
             }
           >
-            {" "}
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>{" "}
+            <div style={{ float: "right" }}>
+              {dayjs(post.createdAt).format("YYYY.MM.DD")}
+            </div>{" "}
             <Card.Meta
               avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
               title={post.Retweet.User.nickname}
@@ -107,11 +116,20 @@ const PostCard = ({ post }) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            {" "}
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>
+            <div style={{ float: "right" }}>
+              {dayjs(post.createdAt).format("YYYY.MM.DD")}
+            </div>{" "}
+            <Card.Meta
+              avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpened && (

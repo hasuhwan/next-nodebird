@@ -10,9 +10,11 @@ import { useSelector } from "react-redux";
 import Head from "next/head";
 const Post = () => {
   const router = useRouter();
-  const { id } = router.query;
   const { singlePost } = useSelector((state) => state.post);
-  console.log(singlePost);
+
+  //   if (router.isFallback && !singlePost) {
+  //     return <div>로딩중...</div>;
+  //   }
   return (
     <AppLayout>
       <Head>
@@ -35,6 +37,30 @@ const Post = () => {
     </AppLayout>
   );
 };
+
+// export async function getStaticPaths() {
+//   return {
+//     paths: [{ params: { id: "1" } }, { params: { id: "3" } }],
+//     fallback: true,
+//   };
+// }
+
+// export const getStaticProps = wrapper.getStaticProps(
+//   (store) =>
+//     async ({ req, res, params, query }) => {
+//       const cookie = req?.headers.cookie;
+//       axios.defaults.headers.Cookie = "";
+//       if (req && cookie) {
+//         axios.defaults.headers.Cookie = cookie;
+//       }
+//       console.log(params.id);
+//       store.dispatch(userActions.loadMyInfoRequest());
+//       store.dispatch(postActions.loadPostRequest(params.id));
+//       store.dispatch(END);
+//       await store.sagaTask.toPromise();
+//     }
+// );
+
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, params, query }) => {

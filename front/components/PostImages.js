@@ -1,21 +1,42 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { PlusOutlined } from "@ant-design/icons";
 import ImagesZoom from "./ImagesZoom";
 const PostImages = ({ images }) => {
   const [showImageZoom, setShowImageZoom] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef(null);
+  const observer = useRef();
   const onZoom = useCallback(() => {
     setShowImageZoom(true);
   }, []);
   const onClose = useCallback(() => {
     setShowImageZoom(false);
   });
+  useEffect(() => {
+    observer.current = new IntersectionObserver(intersertionObserver, {
+      threshold: 1,
+    });
+    imgRef.current && observer.current.observe(imgRef.current);
+  });
+  const intersertionObserver = useCallback(
+    ([entry], observer) => {
+      if (entry.isIntersecting) {
+        observer.unobserve(entry.target);
+        setLoaded(true);
+      }
+    },
+    [loaded]
+  );
   if (images.length === 1) {
     return (
       <>
         <img
+          ref={imgRef}
           role="presentation"
-          src={`http://localhost:3065/${images[0].src}`}
+          src={
+            loaded ? `http://localhost:3065/${images[0].src}` : "/vercel.svg"
+          }
           alt={images[0].src}
           onClick={onZoom}
         />
@@ -29,14 +50,18 @@ const PostImages = ({ images }) => {
         <img
           role="presentation"
           style={{ width: "50%", display: "inline-block" }}
-          src={`http://localhost:3065/${images[0].src}`}
+          src={
+            loaded ? `http://localhost:3065/${images[0].src}` : "/vercel.svg"
+          }
           alt={images[0].src}
           onClick={onZoom}
         />
         <img
           role="presentation"
           style={{ width: "50%", display: "inline-block" }}
-          src={`http://localhost:3065/${images[1].src}`}
+          src={
+            loaded ? `http://localhost:3065/${images[0].src}` : "/vercel.svg"
+          }
           alt={images[1].src}
           onClick={onZoom}
         />
@@ -50,7 +75,9 @@ const PostImages = ({ images }) => {
         <img
           role="presentation"
           style={{ width: "50%", display: "inline-block" }}
-          src={`http://localhost:3065/${images[0].src}`}
+          src={
+            loaded ? `http://localhost:3065/${images[0].src}` : "/vercel.svg"
+          }
           alt={images[0].src}
           onClick={onZoom}
         />

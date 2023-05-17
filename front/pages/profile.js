@@ -9,10 +9,25 @@ import { userActions } from "../reducers/user";
 import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
 import axios from "axios";
+import useSWR from "swr";
+
+const fetcher = (url) =>
+  axios.get(url, { withCredentials: true }).then((result) => result.data);
+
 const Profile = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+
+  // const { data: followersData, error: followerError } = useSWR(
+  //   "http://localhost:3065/user/followers",
+  //   fetcher
+  // );
+  // const { data: followingsData, error: followingError } = useSWR(
+  //   "http://localhost:3065/user/followings",
+  //   fetcher
+  // );
+
   useEffect(() => {
     dispatch(userActions.loadFollowersRequest());
     dispatch(userActions.loadFollowingsRequest());
@@ -23,8 +38,13 @@ const Profile = () => {
     }
   }, [me && me.id]);
   if (!me) {
-    return null;
+    return "내 정보 로딩중";
   }
+  // if (followerError || followingError) {
+  //   console.error(followerError || followingError);
+  //   return "팔로잉/팔로워 로딩 중 에러가 발생";
+  // }
+
   return (
     <>
       <Head>

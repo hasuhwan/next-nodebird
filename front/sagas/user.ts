@@ -3,6 +3,7 @@ import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import { userActions } from "../reducers/user";
 
 function loadMyInfoAPI() {
+  console.log(axios.get("/user"));
   return axios.get("/user");
 }
 
