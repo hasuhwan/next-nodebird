@@ -48,7 +48,7 @@ const Profile = () => {
   return (
     <>
       <Head>
-        <title>내 프로필 | NodeBird</title>
+        <title>{`내 프로필 | ${me.nickname} `}</title>
       </Head>
       <AppLayout>
         <NicknameEditForm />

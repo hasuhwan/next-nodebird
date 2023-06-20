@@ -38,12 +38,13 @@ const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    loadPostRequest(state, action: PayloadAction) {
+    loadPostRequest(state) {
       state.loadPostLoading = true;
       state.loadPostDone = false;
       state.loadPostError = null;
     },
     loadPostSuccess(state, action: PayloadAction<any>) {
+      console.log(action);
       state.loadPostLoading = false;
       state.loadPostDone = true;
       state.singlePost = action.payload;

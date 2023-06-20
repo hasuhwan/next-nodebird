@@ -4,10 +4,11 @@ import useInput from "../hooks/useInput";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { postActions } from "../reducers/post";
+import type { RootState } from "../store/configureStore";
 const CommentForm = ({ post }) => {
-  const id = useSelector((state) => state.user.me?.id);
+  const id = useSelector((state: RootState) => state.user.me?.id);
   const { addCommentDone, addCommentLoading } = useSelector(
-    (state) => state.post
+    (state: RootState) => state.post
   );
   const dispatch = useDispatch();
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
@@ -45,7 +46,5 @@ const CommentForm = ({ post }) => {
     </Form>
   );
 };
-CommentForm.propTypes = {
-  post: PropTypes.object.isRequired,
-};
+
 export default CommentForm;

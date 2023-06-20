@@ -1,5 +1,5 @@
 import axios from "axios";
-import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
+import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { userActions } from "../reducers/user";
 
 function loadMyInfoAPI() {
@@ -59,6 +59,7 @@ function logInAPI(data) {
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.payload);
+    console.log(result);
     yield put(userActions.logInSuccess(result.data));
   } catch (err) {
     yield put(userActions.logInFailure(err.response.data));
